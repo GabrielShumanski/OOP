@@ -12,6 +12,11 @@ public:
     bool operator>(BigNumber& other);
     bool operator!=(BigNumber& other);
     bool operator<(int number);
+    bool operator==(int number);
+    bool operator<=(int number);
+    bool operator>=(int number);
+    bool operator>(int number);
+    bool operator!=(int number);
 private:
     bool chekIfNegative(const char nums);
     int findRightNum(int num, bool numIsNegative,int size, int count);

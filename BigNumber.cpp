@@ -91,6 +91,7 @@ bool BigNumber::operator<(int number) {
 
     int numSize = findNumSize(number);
     bool numIsNegative = number < 0 ? true : false;
+        bool bothAreNegative = this->negative && numIsNegative;
 
     if(this->negative && !numIsNegative)
         return true;
@@ -99,18 +100,39 @@ bool BigNumber::operator<(int number) {
         return false;;
 
     if(numSize < this->num.size() - this->negative)
-        return this->negative && numIsNegative ? false : true;
+        return (bothAreNegative ? true : false);
 
-    while(number / 10 != 0) {
-        int digg = findRightNum(number, numIsNegative, numSize, i);
+    if(numSize == this->num.size() - this->negative) {
+        while(number / 10 != 0) {
+            int digg = findRightNum(number, numIsNegative, numSize, i);
 
-        if(this->num.at(i + this->negative) < digg)
-            return (this->negative ^ numIsNegative ? true : false);
+            if(this->num.at(i + this->negative) - '0' < digg)
+                return (bothAreNegative ? false : true);
 
-        if(this->num.at(i + this->negative) > digg)
-            return (this->negative ^ numIsNegative ? false : true);
-        
+            if(this->num.at(i + this->negative) - '0' > digg)
+                return (bothAreNegative ? false : true);
+            
+            i++;
+        }
     }
+    return (bothAreNegative ? false : true);
+}
+
+bool BigNumber::operator==(int number) {
+    int numSize = findNumSize(number);
+    bool numIsNegative = number < 0 ? true : false;
+
+    if(numSize != this->num.size() || !(this->negative ^ numIsNegative)) 
+        return false;
+    else {
+        for(int i = 0; i < numSize; i++) {
+            int digg = findRightNum(number, numIsNegative, numSize, i);
+
+            if(this->num.at(i + negative) - '0' != digg) 
+                return false;
+        }
+    }
+    return true;
 }
 
 int BigNumber::findNumSize(int number) {
@@ -129,4 +151,20 @@ int BigNumber::findRightNum(int num, bool numIsNegative, int size, int count) {
     if(numIsNegative) 
         return (num%10) * -1;
     else return num%10;
+}
+
+bool BigNumber::operator<=(int number) {
+    return operator<(number) && operator==(number);
+}
+
+bool BigNumber::operator>=(int number) {
+    return !operator<(number) && operator==(number);
+}
+
+bool BigNumber::operator>(int number) {
+    return !operator<(number) && !operator==(number);
+}
+
+bool BigNumber::operator!=(int number) {
+    return !operator==(number);
 }
