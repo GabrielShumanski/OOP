@@ -27,8 +27,9 @@ bool BigNumber::operator<(BigNumber& other) {
         return bn1IsBigger;
 
     //this ? other && this.size() ? other.size()
-    if(this->negative && other.negative || !this->negative && !other.negative){
+    if(this->negative ^ other.negative){
         
+        //znae se ot kursa po DSTR
         bool bothNegative = !(this->negative || other.negative);
 
         if(this->num.size() < other.num.size())
@@ -49,8 +50,10 @@ bool BigNumber::operator<(BigNumber& other) {
         return !bn1IsBigger;
 }
 
+//vijdam, che pravq gore-dolu edni i syshti neshta,
+//nqkakva ideq kakd ase izmykna ot tova?
 bool BigNumber::operator==(BigNumber& other) {
-    if(this->negative && other.negative || !this->negative && !other.negative){
+    if(this->negative ^ other.negative){
         
         bool bothNegative = !(this->negative || other.negative);
 
@@ -89,8 +92,14 @@ bool BigNumber::operator<(int number) {
     int numSize = findNumSize(number);
     bool numIsNegative = number < 0 ? true : false;
 
+    if(this->negative && !numIsNegative)
+        return true;
+
+    if(!this->negative && numIsNegative)
+        return false;;
+
     if(numSize < this->num.size() - this->negative)
-        return true ? this->negative ^ numIsNegative: false;
+        return this->negative && numIsNegative ? false : true;
 
     while(number / 10 != 0) {
         int digg = findRightNum(number, numIsNegative, numSize, i);
